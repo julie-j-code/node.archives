@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="style.css"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <title>Ma todolist</title>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="text-center">Application Todolist en temps réel</h1>
+        <p class="text-center">
+
+            Un simple code d'application Todolist en temps réel avec Node.js, Express.js et socket.io
+
+
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Réaliser une Todolist et échanger des messages en temps réel</h3>
+            <p>Voici les fonctionnalités attendues :
+            <ul>
+                <li> Quand un client se connecte, il récupère la dernière Todolist connue du serveur
+                </li>
+                <li> Quand un client ajoute une tâche, celle-ci est immédiatement répercutée chez les autres clients
+                </li>
+                <li>Quand un client supprime une tâche, celle-ci est immédiatement supprimée chez les autres clients
+            </p>
+            </li>
+
+            </ul>
+
+            <h2>todolist </h2>
+            <!-- The todolist -->
+            <ul id="todolist"></ul>
+
+            <!-- The form to add task -->
+            <form action="/" method="post" id="todolistForm">
+                <label for="task">Que dois-je faire ?</label>
+                <input type="text" name="task" id="task" autofocus required>
+                <input type="submit" class="btn btn-primary" value="Envoyer">
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

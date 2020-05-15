@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Ma todolist</title>
+        <style>
+            a {text-decoration: none; color: black;}
+			ul{ list-style-type: none;}
+        </style>
+    </head>
+    <body>
+
+        <h1>Todolist partagée en temps réel</h1>
+        <ul id="todolist">       
+        </ul>
+            <p>
+                <label for="newtodo">Quelles sont les tâches à effectuer ?</label>
+                <input type="text" name="newtodo" id="newtodo" autofocus required />
+                <input type="submit"  name="addItem" id="addItem" />
+            </p>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+            
+			// On récupére les éléments de la liste des tâches     
+			socket.on('connectionCallback', function(message) {
+				var todolist = JSON.parse(message);
+				console.log(todolist);
+				todolist.forEach(function(item) {
+					addItem(item);
+				})
+            })
+			
+			// on supprime l'élément correspondant lorsqu'un removeElementEvent est reçu. 
+			socket.on('removeItemEvent', function(message) {
+				var item = JSON.parse(message);
+				removeItem(item);
+            })
+			
+			// on supprime l'élément correspondant lorsqu'un addItemEvent est reçu. 
+			socket.on('addItemEvent', function(message) {
+				var item = JSON.parse(message);
+				addItem(item);
+            })
+			
+			//Requête d'ajout d'un élément;
+			function addItemRequest(){
+				var Inputnewtodo = document.getElementById('newtodo');
+				if (Inputnewtodo.value==='')
+					return;
+				var newItem = {id: 0, text: Inputnewtodo.value};
+                socket.emit('addItem',JSON.stringify(newItem));
+				Inputnewtodo.value ='';
+			}
+			
+			// Ajout de l'élément à la liste existante
+			function addItem(item){
+				var li = document.createElement('li');
+				var a = document.createElement('a');
+				var t = document.createTextNode("" + item.text);		
+				a.text = '✘';
+				a.href = '#';
+				li.appendChild(a);	
+				li.appendChild(t);
+				li.id = 'item_' + item.id;
+				document.getElementById('todolist').appendChild(li);
+				a.addEventListener('click', function() {
+					removeItemRequest(item);
+				}, false);	
+			}
+
+			//Suppression d'un élément
+			function removeItem(item){
+			  document.getElementById('item_' + item.id).remove();
+			}
+			
+			// Requête de suppression 
+			function removeItemRequest(item){
+                socket.emit('removeItem',JSON.stringify(item));
+			}
+
+            // envoie au serveur d'une requête d'ajout au clique sur le button 'newtodo'
+            $('#addItem').click(function () {
+				addItemRequest();
+			})
+			
+			// même chose lorsqu'on presse {Enter} dans le champs 'newtodo'
+			$('#newtodo').on('keydown', function(e) {
+			if (e.which == 13) {
+				addItemRequest();
+			}
+		});
+        </script>
+    </body>
+</html>
